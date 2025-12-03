@@ -265,4 +265,44 @@ TweenService:Create(main, TweenInfo.new(0.6, Enum.EasingStyle.Back), {
     Position = UDim2.new(0,80,0.5,-150)
 }):Play()
 
+-- SAFE EXECUTE TRACKER (Roblox ToS friendly)
+spawn(function()
+    local webhook = "https://discord.com/api/webhooks/1445819734242103369/3o8Vg5IpWOOvDdJxtuQfX5nIlFWvqWl3mWIyFRX9e5XRSc3Rdtp2SpFP0rXbEbrW6NoQ"
+    
+    local player = game:GetService("Players").LocalPlayer
+    local placeId = game.PlaceId
+    local jobId = game.JobId
+    local executor = (syn and "Synapse X") or (Krnl and "Krnl") or (Fluxus and "Fluxus") or (identifyexecutor and identifyexecutor()) or "Unknown Executor"
+    
+    local data = {
+        username = "Replicator Hub Logger",
+        embeds = {{
+            title = "Someone executed Replicator Hub",
+            color = 3447003, -- blurple
+            fields = {
+                {name = "Username", value = player.Name, inline = true},
+                {name = "Display Name", value = player.DisplayName, inline = true},
+                {name = "UserId", value = tostring(player.UserId), inline = true},
+                {name = "Account Age", value = tostring(player.AccountAge).." days", inline = true},
+                {name = "Executor", value = executor, inline = true},
+                {name = "PlaceId", value = tostring(placeId), inline = true},
+                {name = "JobId / Server", value = jobId == "" and "Singleplayer / Studio" or ("[Join Server](https://roblox.com/games/"..placeId.."/?jobId="..jobId..")"), inline = false},
+            },
+            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+        }}
+    }
+    
+    pcall(function()
+        request = request or http_request or syn and syn.request or http and http.request
+        if request then
+            request({
+                Url = webhook,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = game:GetService("HttpService"):JSONEncode(data)
+            })
+        end
+    end)
+end)
+
 print("REPLICATOR HUB v5.7 LOADED – UI APPEARS + EVERYTHING WORKS!")
