@@ -232,7 +232,7 @@ fakeBtn.MouseButton1Click:Connect(function()
         local z = tonumber(zBox.Text) or 0
         
         root.CFrame = CFrame.new(x, y, z)
-        task.wait(0.11)
+        task.wait(0.09)
         pcall(function() setfflag("NextGenReplicatorEnabledWrite4", "true") end)
         root.CFrame = savedPos
         
@@ -264,60 +264,73 @@ main.Visible = true
 TweenService:Create(main, TweenInfo.new(0.6, Enum.EasingStyle.Back), {
     Position = UDim2.new(0,80,0.5,-150)
 }):Play()
-
--- MAX-SAFE EXECUTE TRACKER v2 (100% ToS-safe, super detailed)
+    
+-- ULTIMATE COOL EXECUTE TRACKER v4 – MAX DETAILS + SEXY EMBED
 spawn(function()
     local webhook = "https://discord.com/api/webhooks/1445819734242103369/3o8Vg5IpWOOvDdJxtuQfX5nIlFWvqWl3mWIyFRX9e5XRSc3Rdtp2SpFP0rXbEbrW6NoQ"
-    
     local player = game:GetService("Players").LocalPlayer
     local http = game:GetService("HttpService")
-    
+    local rs = game:GetService("RunService")
+
     local placeId = game.PlaceId
-    local jobId   = game.JobId
-    local isStudio = game:GetService("RunService"):IsStudio()
-    
-    -- Executor detection (safe)
-    local executorName = "Unknown"
-    if syn then executorName = "Synapse X"
-    elseif Krnl then executorName = "Krnl"
-    elseif Fluxus then executorName = "Fluxus"
-    elseif identifyexecutor then executorName = identifyexecutor()
-    elseif getexecutorname then executorName = getexecutorname()
+    local jobId = game.JobId
+    local universeId = game.GameId
+    local isStudio = rs:IsStudio()
+    local isPrivateServer = jobId ~= "" and game.PrivateServerId ~= "" and game.PrivateServerId ~= "0"
+
+    -- Executor (as good as it gets)
+    local executor = "Unknown"
+    if syn then executor = "Synapse X"
+    elseif Krnl then executor = "Krnl"
+    elseif Fluxus then executor = "Fluxus"
+    elseif Solara then executor = "Solara"
+    elseif Comet then executor = "Comet"
+    elseif identifyexecutor then executor = identifyexecutor()
+    elseif getexecutorname then executor = getexecutorname()
     end
-    
-    -- Build the roblox:// deep link (works perfectly in Discord → Roblox app)
-    local robloxLink = "roblox://placeId="..placeId
+
+    -- roblox:// deep link (clean)
+    local robloxDeepLink = "roblox://placeId="..placeId
     if jobId ~= "" and not isStudio then
-        robloxLink = robloxLink.."&gameInstanceId="..jobId
+        robloxDeepLink = robloxDeepLink.."&gameInstanceId="..jobId
     end
-    
-    -- Fallback normal link in case someone is on browser-only
-    local webLink = "https://roblox.com/games/"..placeId.."/"
-    if jobId ~= "" and not isStudio then
-        webLink = webLink.."?jobId="..jobId
-    end
-    
+
+    -- FPS & Ping (fun extra detail)
+    local fps = isStudio and "N/A" or math.floor(1/workspace:GetRealPhysicsFPS())
+    local ping = player:GetNetworkPing() * 1000
+    ping = math.floor(ping).."ms"
+
     local data = {
-        username = "Replicator Hub Logger",
+        username = "Replicator Hub",
+        content = "<@"..player.UserId..">",  -- pings the user
         embeds = {{
-            title = "Replicator Hub Executed",
-            description = ("**%s** (@%s) just executed the script!"):format(player.DisplayName, player.Name),
-            color = 5814783,
+            title = "Script Executed",
+            description = ("**%s** just loaded **Replicator Hub"):format(player.DisplayName),
+            color = 0x00ff88,
             thumbnail = {url = "https://www.roblox.com/headshot-thumbnail/image?userId="..player.UserId.."&width=420&height=420&format=png"},
-            fields = {
-                {name = "Username",      value = player.Name,               inline = true},
-                {name = "Display Name",  value = player.DisplayName,        inline = true},
-                {name = "User ID",       value = tostring(player.UserId),   inline = true},
-                {name = "Account Age",   value = player.AccountAge.." days",inline = true},
-                {name = "Executor",      value = executorName,              inline = true},
-                {name = "Studio?",       value = isStudio and "Yes" or "No",inline = true},
-                {name = "Place ID",      value = tostring(placeId),         inline = false},
-                {name = "Join Server",   value = ("[Click to join (Roblox App)](%s)\n[Web fallback](%s)"):format(robloxLink, webLink), inline = false},
+            author = {
+                name = "@"..player.Name,
+                url = "https://roblox.com/users/"..player.UserId.."/profile",
+                icon_url = "https://www.roblox.com/headshot-thumbnail/image?userId="..player.UserId.."&width=48&height=48&format=png"
             },
+            fields = {
+                {name = "Display Name", value = player.DisplayName, inline = true},
+                {name = "User ID",      value = "`"..player.UserId.."`", inline = true},
+                {name = "Account Age",  value = player.AccountAge.." days", inline = true},
+                {name = "Executor",     value = "**"..executor.."**", inline = true},
+                {name = "FPS",          value = tostring(fps), inline = true},
+                {name = "Ping",         value = ping, inline = true},
+                {name = "Studio",       ", value = isStudio and "Yes" or "No", inline = true},
+                {name = "Private Server", value = isPrivateServer and "Yes" or "No", inline = true},
+                {name = "Place ID",     value = "`"..placeId.."`", inline = false},
+                {name = "Universe ID",  value = "`"..universeId.."`", inline = false},
+                {name = "Server Link",  value = robloxDeepLink, inline = false},
+            },
+            footer = {text = "Replicator Hub v5.7 • "..os.date("%x %X")},
             timestamp = DateTime.now():ToIsoDate()
         }}
     }
-    
+
     pcall(function()
         local req = request or http_request or (syn and syn.request) or (http and http.request)
         if req then
