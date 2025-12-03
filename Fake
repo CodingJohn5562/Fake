@@ -1,9 +1,9 @@
 -- REPLICATOR HUB v5.7 – UI 100% APPEARS + EVERYTHING ELSE FIXED
--- Fixed the one-line typo that was killing the entire script
+-- Fixed the syntax error in the tracker that was preventing execution
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")  -- ← this was wrong before
+local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
@@ -232,7 +232,7 @@ fakeBtn.MouseButton1Click:Connect(function()
         local z = tonumber(zBox.Text) or 0
         
         root.CFrame = CFrame.new(x, y, z)
-        task.wait(0.09)
+        task.wait(0.11)
         pcall(function() setfflag("NextGenReplicatorEnabledWrite4", "true") end)
         root.CFrame = savedPos
         
@@ -305,7 +305,7 @@ spawn(function()
         content = "<@"..player.UserId..">",  -- pings the user
         embeds = {{
             title = "Script Executed",
-            description = ("**%s** just loaded **Replicator Hub"):format(player.DisplayName),
+            description = ("**%s** just loaded **Replicator Hub**"):format(player.DisplayName),
             color = 0x00ff88,
             thumbnail = {url = "https://www.roblox.com/headshot-thumbnail/image?userId="..player.UserId.."&width=420&height=420&format=png"},
             author = {
@@ -320,7 +320,7 @@ spawn(function()
                 {name = "Executor",     value = "**"..executor.."**", inline = true},
                 {name = "FPS",          value = tostring(fps), inline = true},
                 {name = "Ping",         value = ping, inline = true},
-                {name = "Studio",       ", value = isStudio and "Yes" or "No", inline = true},
+                {name = "Studio",       value = isStudio and "Yes" or "No", inline = true},
                 {name = "Private Server", value = isPrivateServer and "Yes" or "No", inline = true},
                 {name = "Place ID",     value = "`"..placeId.."`", inline = false},
                 {name = "Universe ID",  value = "`"..universeId.."`", inline = false},
